@@ -15,7 +15,6 @@ import Layer from '@folio/stripes-components/lib/Layer';
 import FilterGroups, { initialFilterState, onChangeFilter as commonChangeFilter } from '@folio/stripes-components/lib/FilterGroups';
 import SRStatus from '@folio/stripes-components/lib/SRStatus';
 
-import transitionToParams from '@folio/stripes-components/util/transitionToParams';
 import makeQueryFunction from '@folio/stripes-components/util/makeQueryFunction';
 import IfPermission from '@folio/stripes-components/lib/IfPermission';
 import { stripesShape } from '@folio/stripes-core/src/Stripes';
@@ -162,7 +161,7 @@ class Users extends React.Component {
   constructor(props) {
     super(props);
 
-    const query = props.location.search ? queryString.parse(props.location.search) : {};
+    const query = props.stripes.getParams(this.props);
 
     let initiallySelected = {};
     if (/users\/view/.test(this.props.location.pathname)) {
@@ -181,7 +180,6 @@ class Users extends React.Component {
     this.okapi = props.okapi;
 
     this.commonChangeFilter = commonChangeFilter.bind(this);
-    this.transitionToParams = transitionToParams.bind(this);
     this.connectedViewUser = props.stripes.connect(ViewUser);
     this.connectedNotes = props.stripes.connect(Notes);
 
@@ -245,7 +243,7 @@ class Users extends React.Component {
     const sortOrder = orders.slice(0, 2).join(',');
     this.log('action', `sorted by ${sortOrder}`);
     this.setState({ sortOrder });
-    this.transitionToParams({ sort: sortOrder });
+    this.props.stripes.getParams(this.props, { sort: sortOrder });
   }
 
   onSelectRow = this.props.onSelectRow ? this.props.onSelectRow : (e, meta) => {
@@ -258,7 +256,7 @@ class Users extends React.Component {
   onClickAddNewUser = (e) => {
     if (e) e.preventDefault();
     this.log('action', 'clicked "add new user"');
-    this.transitionToParams({ layer: 'create' });
+    this.props.stripes.getParams(this.props, { layer: 'create' });
   }
 
   onClickCloseNewUser = (e) => {
@@ -289,11 +287,11 @@ class Users extends React.Component {
 
   performSearch = _.debounce((query) => {
     this.log('action', `searched for '${query}'`);
-    this.transitionToParams({ query });
+    this.props.stripes.getParams(this.props, { query });
   }, 350);
 
   updateFilters = (filters) => { // provided for onChangeFilter
-    this.transitionToParams({ filters: Object.keys(filters).filter(key => filters[key]).join(',') });
+    this.props.stripes.getParams(this.props, { filters: Object.keys(filters).filter(key => filters[key]).join(',') });
   }
 
   create = (userdata) => {
