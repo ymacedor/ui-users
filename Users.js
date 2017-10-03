@@ -243,7 +243,7 @@ class Users extends React.Component {
     const sortOrder = orders.slice(0, 2).join(',');
     this.log('action', `sorted by ${sortOrder}`);
     this.setState({ sortOrder });
-    this.props.stripes.getParams(this.props, { sort: sortOrder });
+    this.props.stripes.setParams(this.props, { sort: sortOrder });
   }
 
   onSelectRow = this.props.onSelectRow ? this.props.onSelectRow : (e, meta) => {
@@ -256,7 +256,7 @@ class Users extends React.Component {
   onClickAddNewUser = (e) => {
     if (e) e.preventDefault();
     this.log('action', 'clicked "add new user"');
-    this.props.stripes.getParams(this.props, { layer: 'create' });
+    this.props.stripes.setParams(this.props, { layer: 'create' });
   }
 
   onClickCloseNewUser = (e) => {
@@ -287,11 +287,11 @@ class Users extends React.Component {
 
   performSearch = _.debounce((query) => {
     this.log('action', `searched for '${query}'`);
-    this.props.stripes.getParams(this.props, { query });
+    this.props.stripes.setParams(this.props, { query });
   }, 350);
 
   updateFilters = (filters) => { // provided for onChangeFilter
-    this.props.stripes.getParams(this.props, { filters: Object.keys(filters).filter(key => filters[key]).join(',') });
+    this.props.stripes.setParams(this.props, { filters: Object.keys(filters).filter(key => filters[key]).join(',') });
   }
 
   create = (userdata) => {
@@ -402,7 +402,7 @@ class Users extends React.Component {
     const patronGroups = (resources.patronGroups || {}).records || [];
     const addressTypes = (resources.addressTypes || {}).records || [];
     const resource = resources.users;
-    const query = location.search ? queryString.parse(location.search) : {};
+    const query = this.props.stripes.getParams(this.props);
 
     /* searchHeader is a 'custom pane header' */
     const searchHeader = <FilterPaneSearch searchFieldId="input-user-search" onChange={this.onChangeSearch} onClear={this.onClearSearch} resultsList={this.resultsList} value={this.state.searchTerm} placeholder={stripes.intl.formatMessage({ id: 'ui-users.search' })} />;
