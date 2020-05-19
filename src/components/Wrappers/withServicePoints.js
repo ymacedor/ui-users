@@ -10,7 +10,8 @@ import {
   coreEvents as events,
 } from '@folio/stripes/core';
 
-const withServicePoints = WrappedComponent => class WithServicePointsComponent extends React.Component {
+function withServicePoints(WrappedComponent) {
+  return class WithServicePointsComponent extends React.Component {
     static manifest = {
       ...WrappedComponent.manifest,
       servicePoints: {
@@ -191,6 +192,7 @@ const withServicePoints = WrappedComponent => class WithServicePointsComponent e
         </>
       );
     }
-};
+  };
+}
 
 export default withServicePoints;
